@@ -1,0 +1,48 @@
+How to set Oracle text for CTXCAT index
+
+--without any responsibility, tested only once....
+
+--replace osu01 with your actual bib base
+
+
+as sys/sysdba
+------------
+@$ORACLE_HOME/ctx/admin/catctx.sql ctxsys SYSAUX TEMP NOLOCK
+@$ORACLE_HOME/rdbms/admin/utlrp.sql
+
+as ctxsys/ctxsys
+-------------------
+@$ORACLE_HOME/ctx/admin/defaults/drdefus.sql
+
+again as sys
+-------------
+--set privilegies
+grant ctxapp to osu01 identified by osu01;
+grant select on ctxsys.dr$preference to osu01;
+grant execute on CTX_DDL to osu01;
+GRANT EXECUTE ON CTXSYS.CTX_CLS to osu01;
+GRANT EXECUTE ON CTXSYS.CTX_DDL to osu01;
+GRANT EXECUTE ON CTXSYS.CTX_DOC to osu01;
+GRANT EXECUTE ON CTXSYS.CTX_OUTPUT to osu01;
+GRANT EXECUTE ON CTXSYS.CTX_QUERY to osu01;
+GRANT EXECUTE ON CTXSYS.CTX_REPORT to osu01;
+GRANT EXECUTE ON CTXSYS.CTX_THES to osu01;
+GRANT EXECUTE ON CTXSYS.CTX_ULEXER to osu01;
+--set removing diacritics - as user osu01
+begin 
+   ctxsys.ctx_ddl.create_preference ('autocom_lex', 'BASIC_LEXER'); 
+   ctxsys.ctx_ddl.set_attribute ('autocom_lex', 'base_letter', 'YES'); -- removes diacritics 
+end;   
+/
+
+
+
+
+
+
+
+
+--Refs:
+http://docs.oracle.com/cd/B28359_01/text.111/b28303/quicktour.htm#i1008091
+http://dbaflavours.blogspot.cz/2012/09/ora-29833-indextype-does-not-exist_18.html
+
