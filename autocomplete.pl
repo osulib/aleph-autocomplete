@@ -30,6 +30,7 @@ my $phr = <FILE>;
 close FILE;
 
 $phr =~ s/'/''/g; $phr =~ s/\s*\n//g; $phr =~ s/^\s+|\s+$//g; #escape quotes, remove newlines and trim
+$phr =~ s/\*//g; #remove stars, which cause oracle text error, 20170228
 
 #protection against sql injection. Added 20140516
 my $phr_quotes = $phr =~ tr/'/'/;
